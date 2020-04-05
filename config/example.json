@@ -1,2 +1,15 @@
 {
+  "server": {
+    "host": "your_host_ipv4 [default: 0.0.0.0]",
+    "port": "your_port [default: 8080]"
+  },
+  "reddit": {
+    "home_route": "your_home_route [example: /reddit]",
+    "redirect_route": "your_redirect_route [example: /reddit_callback]",
+    "client_id": "your_client_id",
+    "client_secret": "your_client_secret",
+    "redirect_uri": "your_redirect_uri [example: http://localhost:8080/reddit_callback]",
+    "duration": "'temporary' or 'permanent'",
+    "scope": ["scope_1 [example: identity]", "scope_2 [example: mysubreddits"]
+  }
 }
