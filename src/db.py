@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import json, datetime, os.path
+import json, datetime, os.path, os
 
 db_dir = "database/"
 
@@ -9,6 +9,14 @@ def get_time_str():
 
 def check_object_exists(id_str):
   return os.path.isfile(db_dir + id_str)
+
+def list_objects():
+  objects = []
+  for f in os.listdir(db_dir):
+    if f == ".gitignore":
+      continue
+    objects.append(f)
+  return objects
 
 def create_object(id_str):
   if check_object_exists(id_str):
@@ -44,3 +52,9 @@ def callback(id_str, value):
     json.dump(data, f, indent=2)
     return True
   return False
+
+def read_object(id_str):
+  if not check_object_exists(id_str):
+    return None
+  with open(db_dir + id_str, "r") as f:
+    return json.load(f)

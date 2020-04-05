@@ -48,7 +48,7 @@ def reddit_callback():
                  "redirect_uri": config["reddit"]["redirect_uri"]}
     headers_data = {"user-agent": str(uuid4())}
     response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
-    ret["access_token"] = response.json()
+    ret["token"] = response.json()
   flag = True
   if ret["state"]:
     flag = db.callback(ret["state"], ret)
