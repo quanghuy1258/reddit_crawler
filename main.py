@@ -3,8 +3,7 @@
 import src.check_libs
 from src import load_config, utils, db, refresh_token
 
-from uuid import uuid4
-import json, urllib.parse, requests, requests.auth, threading
+import uuid, json, urllib.parse, requests, requests.auth, threading
 
 config = load_config.get_config()
 utils.print_config(config)
@@ -21,7 +20,7 @@ def ping():
 
 @app.route(config["reddit"]["home_route"])
 def reddit_home():
-  state = str(uuid4())
+  state = str(uuid.uuid4())
   db.access_object(state)
   params = {}
   params["client_id"] = config["reddit"]["client_id"]
@@ -46,7 +45,7 @@ def reddit_callback():
     post_data = {"grant_type": "authorization_code",
                  "code": ret["code"],
                  "redirect_uri": config["reddit"]["redirect_uri"]}
-    headers_data = {"user-agent": str(uuid4())}
+    headers_data = {"user-agent": str(uuid.uuid4())}
     response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
     ret["token"] = response.json()
     if "access_token" in ret["token"]:
@@ -74,7 +73,7 @@ def refresh_token_func():
     client_auth = requests.auth.HTTPBasicAuth(config["reddit"]["client_id"], config["reddit"]["client_secret"])
     post_data = {"grant_type": "refresh_token",
                  "refresh_token": token}
-    headers_data = {"user-agent": str(uuid4())}
+    headers_data = {"user-agent": str(uuid.uuid4())}
     response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
     ret = response.json()
     if "access_token" in ret:
