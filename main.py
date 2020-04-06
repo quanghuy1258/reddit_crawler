@@ -50,9 +50,9 @@ def reddit_callback():
     response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
     ret["token"] = response.json()
     if "access_token" in ret["token"]:
-      db.write_key((ret["state"], "access_token", ret["token"]["access_token"])
+      db.write_key(ret["state"], "access_token", ret["token"]["access_token"])
     if "refresh_token" in ret["token"]:
-      db.write_key((ret["state"], "refresh_token", ret["token"]["refresh_token"])
+      db.write_key(ret["state"], "refresh_token", ret["token"]["refresh_token"])
       refresh_token.add_refresh(ret["state"], ret["token"]["expires_in"])
   flag = True
   if ret["state"]:
@@ -70,15 +70,15 @@ def refresh_token_func():
     id_str = refresh_token.get_id_to_refresh()
     if id_str is None:
       break
-    refresh_token = db.get_refresh_token(id_str)
+    token = db.get_refresh_token(id_str)
     client_auth = requests.auth.HTTPBasicAuth(config["reddit"]["client_id"], config["reddit"]["client_secret"])
     post_data = {"grant_type": "refresh_token",
-                 "refresh_token": refresh_token}
+                 "refresh_token": token}
     headers_data = {"user-agent": str(uuid4())}
     response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
     ret = response.json()
     if "access_token" in ret:
-      db.write_key((id_str, "access_token", ret["access_token"])
+      db.write_key(id_str, "access_token", ret["access_token"])
       refresh_token.add_refresh(id_str, ret["expires_in"])
 
 

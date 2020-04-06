@@ -20,12 +20,14 @@ def add_refresh(id_str, expires_in):
     refresh_time.sort(key=lambda x: x["expires"])
     cv.notify_all()
 
-def set_break()
+def set_break():
+  global break_flag
   with cv:
     break_flag = True
     cv.notify_all()
 
 def get_id_to_refresh():
+  global refresh_time
   with cv:
     while True:
       if break_flag:
