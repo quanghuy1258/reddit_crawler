@@ -53,6 +53,28 @@ def callback(id_str, value):
     return True
   return False
 
+def write_key(id_str, key, value):
+  if not check_object_exists(id_str):
+    return False
+  data = None
+  with open(db_dir + id_str, "r") as f:
+    data = json.load(f)
+  data[key] = value
+  with open(db_dir + id_str, "w") as f:
+    json.dump(data, f, indent=2)
+    return True
+  return False
+
+def read_key(id_str, key):
+  if not check_object_exists(id_str):
+    return None
+  data = None
+  with open(db_dir + id_str, "r") as f:
+    data = json.load(f)
+  if key in data:
+    return data[key]
+  return None
+
 def read_object(id_str):
   if not check_object_exists(id_str):
     return None

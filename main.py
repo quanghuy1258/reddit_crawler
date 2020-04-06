@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
 import src.check_libs
-from src import load_config, utils, db
+from src import load_config, utils, db, refresh_token
 
 from uuid import uuid4
-import json, urllib.parse, requests, requests.auth
+import json, urllib.parse, requests, requests.auth, threading
 
 config = load_config.get_config()
 utils.print_config(config)
@@ -49,6 +49,11 @@ def reddit_callback():
     headers_data = {"user-agent": str(uuid4())}
     response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
     ret["token"] = response.json()
+    if "access_token" in ret["token"]:
+      db.write_key((ret["state"], "access_token", ret["token"]["access_token"])
+    if "refresh_token" in ret["token"]:
+      db.write_key((ret["state"], "refresh_token", ret["token"]["refresh_token"])
+      refresh_token.add_refresh(ret["state"], ret["token"]["expires_in"])
   flag = True
   if ret["state"]:
     flag = db.callback(ret["state"], ret)
@@ -60,5 +65,28 @@ def reddit_callback():
     return "ERROR: Unknow state: {}".format(ret["state"])
   return redirect("https://www.reddit.com/")
 
+def refresh_token_func():
+  while True:
+    id_str = refresh_token.get_id_to_refresh()
+    if id_str is None:
+      break
+    refresh_token = db.get_refresh_token(id_str)
+    client_auth = requests.auth.HTTPBasicAuth(config["reddit"]["client_id"], config["reddit"]["client_secret"])
+    post_data = {"grant_type": "refresh_token",
+                 "refresh_token": refresh_token}
+    headers_data = {"user-agent": str(uuid4())}
+    response = requests.post("https://ssl.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=headers_data)
+    ret = response.json()
+    if "access_token" in ret:
+      db.write_key((id_str, "access_token", ret["access_token"])
+      refresh_token.add_refresh(id_str, ret["expires_in"])
+
+
 if __name__ == "__main__":
+  refresh_token_thread = threading.Thread(target=refresh_token_func)
+  refresh_token_thread.start()
+
   app.run(host=server_host, port=server_port)
+
+  refresh_token.set_break()
+  refresh_token_thread.join()
