@@ -70,7 +70,7 @@ def refresh_token_func():
     id_str = refresh_token.get_id_to_refresh()
     if id_str is None:
       break
-    token = db.get_refresh_token(id_str)
+    token = db.read_key(id_str, "refresh_token")
     client_auth = requests.auth.HTTPBasicAuth(config["reddit"]["client_id"], config["reddit"]["client_secret"])
     post_data = {"grant_type": "refresh_token",
                  "refresh_token": token}
