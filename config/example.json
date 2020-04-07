@@ -11,5 +11,9 @@
     "redirect_uri": "your_redirect_uri [example: http://localhost:8080/reddit_callback]",
     "duration": "'temporary' or 'permanent'",
     "scope": ["scope_1 [example: identity]", "scope_2 [example: mysubreddits"]
+  },
+  "telegram": {
+    "token": "your_bot_token",
+    "chat_id": "your_chat_id"
   }
 }

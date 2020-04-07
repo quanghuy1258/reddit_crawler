@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import src.check_libs
-from src import load_config, utils, db, refresh_token
+from src import load_config, utils, db, refresh_token, telegram_bot, reddit_notifier
 
 import uuid, json, urllib.parse, requests, requests.auth, threading
 
@@ -80,12 +80,26 @@ def refresh_token_func():
       db.write_key(id_str, "access_token", ret["access_token"])
       refresh_token.add_refresh(id_str, ret["expires_in"])
 
+def push_notify():
+  bot = telegram_bot.TelegramBot(config["telegram"]["token"])
+  chat_id = config["telegram"]["chat_id"]
+  chat_id = utils.try_string_to_int(chat_id, chat_id)
+  while True:
+    list_text = reddit_notifier.get_notify()
+    if list_text is None:
+      break
+    for text in list_text:
+      bot.sendMessage(chat_id, text)
 
 if __name__ == "__main__":
   refresh_token_thread = threading.Thread(target=refresh_token_func)
   refresh_token_thread.start()
+  push_notify_thread = threading.Thread(target=push_notify)
+  push_notify_thread.start()
 
   app.run(host=server_host, port=server_port)
 
   refresh_token.set_break()
   refresh_token_thread.join()
+  reddit_notifier.set_break()
+  push_notify_thread.join()
