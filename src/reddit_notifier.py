@@ -12,7 +12,7 @@ def set_break():
     break_flag = True
     cv.notify_all()
 
-def get_notify():
+def get_notify(config):
   with cv:
     while True:
       if break_flag:

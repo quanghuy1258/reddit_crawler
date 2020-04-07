@@ -85,7 +85,7 @@ def push_notify():
   chat_id = config["telegram"]["chat_id"]
   chat_id = utils.try_string_to_int(chat_id, chat_id)
   while True:
-    list_text = reddit_notifier.get_notify()
+    list_text = reddit_notifier.get_notify(config)
     if list_text is None:
       break
     for text in list_text:
