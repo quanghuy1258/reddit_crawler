@@ -81,11 +81,13 @@ def refresh_token_func():
       refresh_token.add_refresh(id_str, ret["expires_in"])
 
 def push_notify():
+  global config
   bot = telegram_bot.TelegramBot(config["telegram"]["token"])
   chat_id = config["telegram"]["chat_id"]
   chat_id = utils.try_string_to_int(chat_id, chat_id)
   while True:
-    list_text = reddit_notifier.get_notify(config)
+    config = load_config.get_config()
+    list_text = reddit_notifier.get_notify(latest_config=config)
     if list_text is None:
       break
     for text in list_text:

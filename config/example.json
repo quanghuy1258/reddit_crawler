@@ -15,5 +15,6 @@
   "telegram": {
     "token": "your_bot_token",
     "chat_id": "your_chat_id"
+    "database_id": "database_id with your reddit access token"
   }
 }
