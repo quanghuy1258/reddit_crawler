@@ -65,6 +65,7 @@ def reddit_callback():
   return redirect("https://www.reddit.com/")
 
 def refresh_token_func():
+  print("INFO: Starting refresh_token_func ...")
   while True:
     id_str = refresh_token.get_id_to_refresh()
     if id_str is None:
@@ -79,8 +80,10 @@ def refresh_token_func():
     if "access_token" in ret:
       db.write_key(id_str, "access_token", ret["access_token"])
       refresh_token.add_refresh(id_str, ret["expires_in"])
+  print("INFO: Finishing refresh_token_func ...")
 
 def push_notify():
+  print("INFO: Starting push_notify ...")
   global config
   bot = telegram_bot.TelegramBot(config["telegram"]["token"])
   chat_id = config["telegram"]["chat_id"]
@@ -92,6 +95,7 @@ def push_notify():
       break
     for text in list_text:
       bot.sendMessage(chat_id, text)
+  print("INFO: Finishing push_notify ...")
 
 if __name__ == "__main__":
   refresh_token_thread = threading.Thread(target=refresh_token_func)
