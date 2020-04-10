@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import threading
+import threading, traceback
 
 cv = threading.Condition()
 break_flag = False
@@ -22,8 +22,11 @@ def get_notify(latest_config):
     if break_flag:
       return None
     list_text = []
-    ####################################
-    # DO SOMETHING HERE
-    ####################################
+    try:
+      ####################################
+      # DO SOMETHING HERE
+      ####################################
+    except:
+      list_text.append(traceback.format_exc())
     return list_text
   return None
