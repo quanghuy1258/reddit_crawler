@@ -5,12 +5,12 @@ import threading, datetime
 cv = threading.Condition()
 break_flag = False
 refresh_time = []
+latency_time = 300
 
 def get_timeout():
   now = datetime.datetime.now()
   deadline = refresh_time[0]["expires"]
-  return (deadline - now).total_seconds()
-
+  return (deadline - now).total_seconds() - latency_time
 
 def add_refresh(id_str, expires_in):
   with cv:
