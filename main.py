@@ -5,7 +5,7 @@ from src import load_config, utils, db, refresh_token, telegram_bot, reddit_noti
 
 import uuid, json, urllib.parse, requests, requests.auth, threading, logging
 
-logging.basicConfig(filename="log.txt", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG)
+logging.basicConfig(filename="log.txt", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 config = load_config.get_config()
 utils.print_config(config)
@@ -100,7 +100,7 @@ def push_notify():
   print("INFO: Finishing push_notify ...")
 
 if __name__ == "__main__":
-  logging.debug("TEST logging")
+  logging.info("TEST logging")
 
   refresh_token_thread = threading.Thread(target=refresh_token_func)
   refresh_token_thread.start()
