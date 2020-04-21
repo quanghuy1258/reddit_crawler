@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import threading, traceback
+import threading, traceback, logging
 
 cv = threading.Condition()
 break_flag = False
@@ -27,6 +27,6 @@ def get_notify(latest_config):
       # DO SOMETHING HERE
       ####################################
     except:
-      list_text.append(traceback.format_exc())
+      logging.error(traceback.format_exc())
     return list_text
   return None
