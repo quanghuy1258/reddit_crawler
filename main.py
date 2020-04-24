@@ -3,9 +3,12 @@
 import src.check_libs
 from src import load_config, utils, db, refresh_token, telegram_bot, reddit_notifier
 
-import uuid, json, urllib.parse, requests, requests.auth, threading, logging
+import uuid, json, urllib.parse, requests, requests.auth, threading, logging, time
 
 logging.basicConfig(filename="log.txt", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+
+num_retry = 3
+retry_sleep_time = 1
 
 config = load_config.get_config()
 utils.print_config(config)
@@ -96,7 +99,13 @@ def push_notify():
     if list_text is None:
       break
     for text in list_text:
-      bot.sendMessage(chat_id, text)
+      for _ in range(num_retry):
+        try:
+          bot.sendMessage(chat_id, text)
+          break
+        except:
+          print("INFO: Send message: FAILED --> Retrying in {} second(s)".format(retry_sleep_time))
+          time.sleep(retry_sleep_time)
   print("INFO: Finishing push_notify ...")
 
 if __name__ == "__main__":
