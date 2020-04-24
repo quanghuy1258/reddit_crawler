@@ -28,5 +28,7 @@ def get_notify(latest_config):
       ####################################
     except:
       logging.error(traceback.format_exc())
+    if len(list_text) > 0:
+      list_text.append("=" * 40)
     return list_text
   return None
